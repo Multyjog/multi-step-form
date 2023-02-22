@@ -15,7 +15,7 @@ export const useFormStore = defineStore("form", () => {
   const initialState = { ...userInfo.value };
 
   const steps = ref([
-    { id: "PersonalInfo", progress: 1 },
+    { id: "PersonalInfo", progress: 5 },
     { id: "ContactInfo", progress: 35 },
     { id: "PaymentInfo", progress: 65 },
     { id: "Results", progress: 100 },
@@ -48,8 +48,8 @@ export const useFormStore = defineStore("form", () => {
   });
 
   // MUTATIONS
-  function addInfo(key: keyof IUser, value: any) {
-    userInfo.value[key] = value;
+  function addInfo(key: keyof IUser, data: string) {
+    userInfo.value[key] = data;
   }
   function switchStep(data: IStep) {
     currentStep.value = data;

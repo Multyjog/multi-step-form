@@ -65,14 +65,15 @@ import { defineComponent, ref, watch } from "vue";
 export default defineComponent({
   name: "PaymentInfo",
   emits: ["formValid", "formInvalid"],
+  props: ["userData"],
   components: {
     InputMask,
     InputText,
   },
   setup(props, { emit }) {
     const data = ref({
-      card: "",
-      billingName: "",
+      card: props.userData.card,
+      billingName: props.userData.billingName,
     });
     const rules = {
       card: { required },

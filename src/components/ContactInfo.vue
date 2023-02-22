@@ -62,14 +62,15 @@ import { defineComponent, ref, watch } from "vue";
 export default defineComponent({
   name: "ContactInfo",
   emits: ["formValid", "formInvalid"],
+  props: ["userData"],
   components: {
     InputText,
     InputMask,
   },
   setup(props, { emit }) {
     const data = ref({
-      phone: "",
-      email: null,
+      phone: props.userData.phone,
+      email: props.userData.email,
     });
     const rules = {
       phone: { required },

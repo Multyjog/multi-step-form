@@ -4,6 +4,7 @@
     <form id="form" @submit.prevent="handleSubmit" class="current-step">
       <component
         v-motion-roll-left
+        :userData="dataFromStore"
         @formValid="storeData"
         @formInvalid="disabled = true"
         :is="currentStep.id"
@@ -29,6 +30,7 @@
 <script lang="ts">
 import { ref } from "vue";
 import { useFormStore } from "@/store/FormStore";
+import axios from "axios";
 
 import Button from "primevue/button";
 
@@ -53,11 +55,11 @@ export default {
     const store = useFormStore();
     const currentStep = store.getCurrentStep;
     const disabled = ref(true);
-
     const dataFromCurrentForm = ref({});
 
+    const dataFromStore = store.getFilledData;
     // Fetch Data if it exists
-    
+
     const storeData = (data: object) => {
       disabled.value = false;
       dataFromCurrentForm.value = data;
@@ -73,9 +75,26 @@ export default {
           dataFromCurrentForm.value[element as keyof object]
         );
       });
-      console.log("data is saved", dataFromCurrentForm.value);
+
+      if (currentStep.value.id === "PaymentInfo") {
+        sendDataToServer();
+      }
+
       goNext();
     };
+    // NOT WORKING CODE. JUST FOR EXAMPLE BECAUSE TASK REQUIRE DATA TRANSFER TO SERVER :)
+    const sendDataToServer = async () => {
+      const data = store.getFilledData;
+      axios
+        .post("/userInfo", data)
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    };
+    // ----------------
     const goNext = () => {
       const nextStep = store.getNextStep;
       disabled.value = true;
@@ -83,17 +102,18 @@ export default {
     };
     const goBack = () => {
       const prevStep = store.getPreviousStep;
-      console.log(prevStep);
+      disabled.value = false;
       store.switchStep(prevStep);
     };
 
     return {
-      restart,
       goBack,
+      restart,
       disabled,
       storeData,
       currentStep,
       handleSubmit,
+      dataFromStore,
       dataFromCurrentForm,
     };
   },

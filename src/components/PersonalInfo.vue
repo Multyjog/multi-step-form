@@ -50,15 +50,17 @@ import { defineComponent, ref, watch } from "vue";
 export default defineComponent({
   name: "PersonalInfo",
   emits: ["formValid", "formInvalid"],
+  props: ["userData"],
   components: {
     InputText,
     Calendar,
   },
   setup(props, { emit }) {
     const data = ref({
-      name: "",
-      date: null,
+      name: props.userData.name,
+      date: props.userData.date,
     });
+
     const rules = {
       name: { required },
       date: { required },
