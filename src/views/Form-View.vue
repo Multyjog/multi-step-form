@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useFormStore } from "@/store/FormStore";
 import axios from "axios";
 
@@ -57,7 +57,9 @@ export default {
     const disabled = ref(true);
     const dataFromCurrentForm = ref({});
 
-    const dataFromStore = store.getFilledData;
+    const dataFromStore = computed(() => {
+      return store.getFilledData;
+    });
     // Fetch Data if it exists
 
     const storeData = (data: object) => {
@@ -79,7 +81,6 @@ export default {
       if (currentStep.value.id === "PaymentInfo") {
         sendDataToServer();
       }
-
       goNext();
     };
     // NOT WORKING CODE. JUST FOR EXAMPLE BECAUSE TASK REQUIRE DATA TRANSFER TO SERVER :)

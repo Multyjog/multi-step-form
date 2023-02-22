@@ -21,7 +21,7 @@
     <div class="field">
       <div>
         <Calendar
-          dateFormat="dd.mm.yy"
+          dateFormat="dd-mm-yy"
           placeholder="DOB"
           id="date"
           v-model="v$.date.$model"

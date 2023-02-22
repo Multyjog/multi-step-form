@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import { IStep, IUser } from "@/interfaces";
 import type { Ref } from "vue";
+// import _cloneDeep from "lodash";
 
 export const useFormStore = defineStore("form", () => {
   const userInfo: Ref<IUser> = ref({
@@ -12,7 +13,6 @@ export const useFormStore = defineStore("form", () => {
     card: "",
     billingName: "",
   });
-  const initialState = { ...userInfo.value };
 
   const steps = ref([
     { id: "PersonalInfo", progress: 5 },
@@ -55,7 +55,14 @@ export const useFormStore = defineStore("form", () => {
     currentStep.value = data;
   }
   function restart() {
-    userInfo.value = initialState;
+    userInfo.value = {
+      name: "",
+      date: null,
+      email: "",
+      phone: "",
+      card: "",
+      billingName: "",
+    };
     switchStep({
       id: "PersonalInfo",
       progress: 5,

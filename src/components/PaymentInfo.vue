@@ -2,11 +2,11 @@
   <div>
     <div class="header">Payment information:</div>
     <div class="field">
-      <div class="p-float-label">
+      <div>
         <InputMask
           id="card"
           mask="9999-9999-9999-9999"
-          placeholder="4444-4444-4444-4444"
+          placeholder="9999-9999-9999-9999"
           v-model="v$.card.$model"
           :class="{
             'p-invalid': v$.card.$invalid && v$.card.$dirty,

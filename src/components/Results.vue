@@ -6,7 +6,7 @@
     <div><strong>Email:</strong> {{ data.email }}</div>
     <div><strong>Phone:</strong> {{ data.phone }}</div>
     <div><strong>Card number:</strong> {{ data.card }}</div>
-    <div><strong>billingName:</strong> {{ data.billingName }}</div>
+    <div><strong>Billing name:</strong> {{ data.billingName }}</div>
   </div>
 </template>
 
@@ -21,7 +21,7 @@ export default defineComponent({
   setup() {
     const store = useFormStore();
     const data = store.getFilledData;
-    data.date = dayjs(data.date).format("YYYY-MM-DD");
+    data.date = dayjs(data.date).format("DD-MM-YYYY");
     return {
       data,
     };
