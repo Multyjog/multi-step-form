@@ -4,6 +4,7 @@ export interface IUser {
   date: string | null;
   phone: string;
   card: string;
+  billingName: string;
 }
 
 export interface IStep {

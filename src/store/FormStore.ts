@@ -10,19 +10,22 @@ export const useFormStore = defineStore("form", () => {
     email: "",
     phone: "",
     card: "",
+    billingName: "",
   });
-  // const progress = ref(0);
+  const initialState = { ...userInfo.value };
+
   const steps = ref([
-    { id: "PersonalInfo", progress: 0 },
+    { id: "PersonalInfo", progress: 1 },
     { id: "ContactInfo", progress: 35 },
     { id: "PaymentInfo", progress: 65 },
     { id: "Results", progress: 100 },
   ]);
   const currentStep = ref({
     id: "PersonalInfo",
-    progress: 0,
+    progress: 5,
   });
 
+  // GETTERS
   const getCurrentStep = computed(() => {
     return currentStep;
   });
@@ -40,21 +43,36 @@ export const useFormStore = defineStore("form", () => {
     const prevStep = steps.value[indexOfCurrentStep - 1];
     return prevStep;
   });
+  const getFilledData = computed(() => {
+    return userInfo.value;
+  });
+
+  // MUTATIONS
   function addInfo(key: keyof IUser, value: any) {
     userInfo.value[key] = value;
   }
-
   function switchStep(data: IStep) {
     currentStep.value = data;
+  }
+  function restart() {
+    userInfo.value = initialState;
+    switchStep({
+      id: "PersonalInfo",
+      progress: 5,
+    });
   }
 
   return {
     userInfo,
     currentStep,
+
+    getFilledData,
     getNextStep,
     getCurrentStep,
+    getPreviousStep,
+
     addInfo,
     switchStep,
-    getPreviousStep,
+    restart,
   };
 });

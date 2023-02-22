@@ -1,20 +1,28 @@
 <template>
   <ProgressInfo @goBack="goBack" :value="currentStep.progress" />
-  <div class="form">
+  <div v-motion-roll-left>
     <form id="form" @submit.prevent="handleSubmit" class="current-step">
       <component
+        v-motion-roll-left
         @formValid="storeData"
         @formInvalid="disabled = true"
         :is="currentStep.id"
       />
+      <Button
+        v-if="currentStep.id === 'Results'"
+        label="Start over"
+        @click="restart"
+        class="start-over-button"
+      />
+      <Button
+        v-else
+        type="submit"
+        :disabled="disabled"
+        form="form"
+        label="Submit"
+        class="submit-button"
+      />
     </form>
-    <Button
-      type="submit"
-      :disabled="disabled"
-      form="form"
-      label="Submit"
-      class="mt-2"
-    />
   </div>
 </template>
 
@@ -49,11 +57,14 @@ export default {
     const dataFromCurrentForm = ref({});
 
     // Fetch Data if it exists
+    
     const storeData = (data: object) => {
       disabled.value = false;
       dataFromCurrentForm.value = data;
     };
-
+    const restart = () => {
+      store.restart();
+    };
     const handleSubmit = () => {
       const keys = Object.keys(dataFromCurrentForm.value);
       keys.forEach((element) => {
@@ -67,6 +78,7 @@ export default {
     };
     const goNext = () => {
       const nextStep = store.getNextStep;
+      disabled.value = true;
       store.switchStep(nextStep);
     };
     const goBack = () => {
@@ -76,6 +88,7 @@ export default {
     };
 
     return {
+      restart,
       goBack,
       disabled,
       storeData,
@@ -89,6 +102,27 @@ export default {
 
 <style lang="scss" scoped>
 .current-step {
-  max-width: 600px;
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.submit-button {
+  margin-top: 10px;
+}
+.start-over-button {
+  margin-top: 10px;
+  background: chocolate;
+  border-color: chocolate;
+  color: white;
+}
+.start-over-button:hover,
+.start-over-button:active {
+  margin-top: 10px;
+  background: rgb(185, 92, 26);
+  border-color: rgb(185, 92, 26);
+  color: white;
 }
 </style>

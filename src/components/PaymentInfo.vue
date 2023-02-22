@@ -30,11 +30,32 @@
         >{{ v$.card.required.$message.replace("Value", "Card") }}</small
       >
     </div>
+    <div class="field">
+      <div>
+        <InputText
+          id="billing-name"
+          placeholder="Billing name"
+          v-model="v$.billingName.$model"
+          :class="{
+            'p-invalid': v$.billingName.$invalid && v$.billingName.$dirty,
+          }"
+        />
+      </div>
+      <small
+        v-if="
+          (v$.billingName.$dirty && v$.billingName.$invalid) ||
+          v$.billingName.$pending.$response
+        "
+        class="p-error"
+        >{{ v$.billingName.required.$message.replace("Value", "Name") }}</small
+      >
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import InputMask from "primevue/inputmask";
+import InputText from "primevue/inputtext";
 
 import { required, alphaNum, maxLength } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
@@ -46,13 +67,16 @@ export default defineComponent({
   emits: ["formValid", "formInvalid"],
   components: {
     InputMask,
+    InputText,
   },
   setup(props, { emit }) {
     const data = ref({
       card: "",
+      billingName: "",
     });
     const rules = {
       card: { required },
+      billingName: { required },
     };
     const v$ = useVuelidate(rules, data);
 
@@ -80,9 +104,8 @@ export default defineComponent({
 .inputs {
   display: flex;
   flex-direction: column;
-
-  .field {
-    margin: 0 10px 10px;
-  }
+}
+.field {
+  margin: 20px 0;
 }
 </style>

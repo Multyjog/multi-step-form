@@ -20,7 +20,12 @@
     </div>
     <div class="field">
       <div>
-        <Calendar placeholder="DOB" id="date" v-model="v$.date.$model" />
+        <Calendar
+          dateFormat="dd.mm.yy"
+          placeholder="DOB"
+          id="date"
+          v-model="v$.date.$model"
+        />
       </div>
       <small
         v-if="
