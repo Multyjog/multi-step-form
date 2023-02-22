@@ -2,7 +2,7 @@
   <div>
     <h3>Your Summary:</h3>
     <div><strong>Name:</strong> {{ data.name }}</div>
-    <div><strong>DOB:</strong> {{ data.date }}</div>
+    <div><strong>DOB:</strong> {{ formattedDate }}</div>
     <div><strong>Email:</strong> {{ data.email }}</div>
     <div><strong>Phone:</strong> {{ data.phone }}</div>
     <div><strong>Card number:</strong> {{ data.card }}</div>
@@ -21,9 +21,10 @@ export default defineComponent({
   setup() {
     const store = useFormStore();
     const data = store.getFilledData;
-    data.date = dayjs(data.date).format("DD-MM-YYYY");
+    const formattedDate = dayjs(data.date).format("DD-MM-YYYY");
     return {
       data,
+      formattedDate,
     };
   },
 });
