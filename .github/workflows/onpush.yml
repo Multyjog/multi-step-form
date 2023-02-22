@@ -5,34 +5,34 @@ on:
       - main
 jobs:
   update:
-  name: update gh-pages
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v3
-    - name: Set up node
-      uses: actions/setup-node@v3
-      with: 
-        node-version: '18'
-    - name: Install deps
-      run: |
-        npm install 
-    - name: Build project
-      run: |
-        npm run build
-    - name: Checkout gh-pages-branch
-      uses: actions/checkout@v3
-      with: 
-        ref: gh-pages
-        path: ./gh-pages
-    - name: Copy files
-      run: | 
-        rm -rf gh-pages/* 
-        mv dist/* ./gh-pages
-    - name: Push changes
-      run: |
-        cd gh-pages
-        git config --global user.name "github-actions"
-        git config --global user.email "github-actions@github.com"
-        git commit -am 'Update gh-pages'
-        git push
+    name: update gh-pages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up node
+        uses: actions/setup-node@v3
+        with: 
+          node-version: '18'
+      - name: Install deps
+        run: |
+          npm install 
+      - name: Build project
+        run: |
+          npm run build
+      - name: Checkout gh-pages-branch
+        uses: actions/checkout@v3
+        with: 
+          ref: gh-pages
+          path: ./gh-pages
+      - name: Copy files
+        run: | 
+          rm -rf gh-pages/* 
+          mv dist/* ./gh-pages
+      - name: Push changes
+        run: |
+          cd gh-pages
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git commit -am 'Update gh-pages'
+          git push
     
