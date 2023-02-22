@@ -36,6 +36,7 @@ jobs:
           cd gh-pages
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
-          git commit -am 'Update gh-pages'
+          git add --all
+          git commit -m 'Update gh-pages'
           git push
     
