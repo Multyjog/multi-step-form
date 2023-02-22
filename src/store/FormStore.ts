@@ -1,27 +1,60 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
+import { IStep, IUser } from "@/interfaces";
+import type { Ref } from "vue";
 
 export const useFormStore = defineStore("form", () => {
-  const userInfo = ref({
+  const userInfo: Ref<IUser> = ref({
     name: "",
+    date: null,
     email: "",
-    dob: null,
+    phone: "",
+    card: "",
   });
-  const progress = ref(33);
+  // const progress = ref(0);
+  const steps = ref([
+    { id: "PersonalInfo", progress: 0 },
+    { id: "ContactInfo", progress: 35 },
+    { id: "PaymentInfo", progress: 65 },
+    { id: "Results", progress: 100 },
+  ]);
   const currentStep = ref({
     id: "PersonalInfo",
-    step: 1,
+    progress: 0,
   });
 
-  const getProgress = computed(() => {
-    return progress;
-  });
   const getCurrentStep = computed(() => {
     return currentStep;
   });
-  // function increment() {
-  //   count.value++;
-  // }
+  const getNextStep = computed(() => {
+    const indexOfCurrentStep = steps.value.findIndex(
+      (el) => el.id === currentStep.value.id
+    );
+    const nextStep = steps.value[indexOfCurrentStep + 1];
+    return nextStep;
+  });
+  const getPreviousStep = computed(() => {
+    const indexOfCurrentStep = steps.value.findIndex(
+      (el) => el.id === currentStep.value.id
+    );
+    const prevStep = steps.value[indexOfCurrentStep - 1];
+    return prevStep;
+  });
+  function addInfo(key: keyof IUser, value: any) {
+    userInfo.value[key] = value;
+  }
 
-  return { progress, currentStep, getProgress, getCurrentStep };
+  function switchStep(data: IStep) {
+    currentStep.value = data;
+  }
+
+  return {
+    userInfo,
+    currentStep,
+    getNextStep,
+    getCurrentStep,
+    addInfo,
+    switchStep,
+    getPreviousStep,
+  };
 });

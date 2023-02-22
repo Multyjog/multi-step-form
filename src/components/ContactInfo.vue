@@ -1,37 +1,95 @@
 <template>
   <div>
-    <div class="header">Contact info:</div>
-    <div class="inputs">
-      <InputText v-model="firstName" placeholder="Name" />
-      <!-- <InputText v-model="lastName" placeholder="Lastname" />
-      <Calendar v-model="dob" placeholder="DOB" /> -->
+    <div class="header">Personal information:</div>
+    <div class="field">
+      <div>
+        <!-- placeholder="Phone" -->
+        <InputMask
+          id="phoneext"
+          mask="(999) 999-9999"
+          v-model="v$.phone.$model"
+          :class="{ 'p-invalid': v$.phone.$invalid && v$.phone.$dirty }"
+          placeholder="(999) 999-9999"
+        />
+      </div>
+      <small
+        v-if="
+          (v$.phone.$dirty && v$.phone.$invalid) || v$.phone.$pending.$response
+        "
+        class="p-error"
+        >{{ v$.phone.required.$message.replace("Value", "Phone") }}</small
+      >
+    </div>
+    <div class="field">
+      <div>
+        <InputText
+          id="email"
+          v-model="v$.email.$model"
+          :class="{ 'p-invalid': v$.email.$invalid && v$.email.$dirty }"
+          aria-describedby="email-error"
+          placeholder="example@gmail.com"
+        />
+      </div>
+      <span v-if="v$.email.$error && v$.email.$dirty">
+        <span
+          id="email-error"
+          v-for="(error, index) of v$.email.$errors"
+          :key="index"
+        >
+          <small class="p-error">{{ error.$message }}</small>
+        </span>
+      </span>
+      <small
+        v-else-if="
+          (v$.email.$invalid && v$.email.$dirty) || v$.email.$pending.$response
+        "
+        class="p-error"
+        >{{ v$.email.required.$message.replace("Value", "Email") }}</small
+      >
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import InputText from "primevue/inputtext";
-import Calendar from "primevue/calendar";
+import InputMask from "primevue/inputmask";
 
-import { ref } from "vue";
+import { required, email } from "@vuelidate/validators";
+import { useVuelidate } from "@vuelidate/core";
 
-export default {
+import { defineComponent, ref, watch } from "vue";
+
+export default defineComponent({
   name: "ContactInfo",
+  emits: ["formValid", "formInvalid"],
   components: {
     InputText,
-    // Calendar,
+    InputMask,
   },
-  setup() {
-    const firstName = ref("");
-    const lastName = ref("");
-    const dob = ref(null);
+  setup(props, { emit }) {
+    const data = ref({
+      phone: "",
+      email: null,
+    });
+    const rules = {
+      phone: { required },
+      email: { required, email },
+    };
+    const v$ = useVuelidate(rules, data);
+
+    watch(v$, async (newValue, oldValue) => {
+      if (newValue.$invalid) {
+        emit("formInvalid");
+      } else {
+        emit("formValid", data.value);
+      }
+    });
+
     return {
-      firstName,
-      lastName,
-      dob,
+      v$,
     };
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>
@@ -43,10 +101,8 @@ export default {
 .inputs {
   display: flex;
   flex-direction: column;
-
-  input,
-  span {
-    margin: 0 10px 10px;
-  }
+}
+.field {
+  margin: 20px 0;
 }
 </style>

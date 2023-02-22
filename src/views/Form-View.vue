@@ -1,10 +1,20 @@
 <template>
-  <ProgressBar :value="progress" />
-
+  <ProgressInfo @goBack="goBack" :value="currentStep.progress" />
   <div class="form">
-    <div class="current-step">
-      <component @infoFilled="saveData" :is="currentStep.id" />
-    </div>
+    <form id="form" @submit.prevent="handleSubmit" class="current-step">
+      <component
+        @formValid="storeData"
+        @formInvalid="disabled = true"
+        :is="currentStep.id"
+      />
+    </form>
+    <Button
+      type="submit"
+      :disabled="disabled"
+      form="form"
+      label="Submit"
+      class="mt-2"
+    />
   </div>
 </template>
 
@@ -12,41 +22,72 @@
 import { ref } from "vue";
 import { useFormStore } from "@/store/FormStore";
 
-import ProgressBar from "primevue/progressbar";
+import Button from "primevue/button";
 
+import ProgressInfo from "@/components/ProgressInfo.vue";
 import PersonalInfo from "@/components/PersonalInfo.vue";
 import ContactInfo from "@/components/ContactInfo.vue";
+import PaymentInfo from "@/components/PaymentInfo.vue";
+import Results from "@/components/Results.vue";
 
 export default {
   name: "Form-View",
   components: {
+    Button,
+
+    ProgressInfo,
     PersonalInfo,
-    ProgressBar,
     ContactInfo,
+    PaymentInfo,
+    Results,
   },
   setup() {
     const store = useFormStore();
-    const progress = store.getProgress;
     const currentStep = store.getCurrentStep;
-    const saveData = (data: any) => {
-      console.log(data);
+    const disabled = ref(true);
+
+    const dataFromCurrentForm = ref({});
+
+    // Fetch Data if it exists
+    const storeData = (data: object) => {
+      disabled.value = false;
+      dataFromCurrentForm.value = data;
+    };
+
+    const handleSubmit = () => {
+      const keys = Object.keys(dataFromCurrentForm.value);
+      keys.forEach((element) => {
+        store.addInfo(
+          element as keyof object,
+          dataFromCurrentForm.value[element as keyof object]
+        );
+      });
+      console.log("data is saved", dataFromCurrentForm.value);
+      goNext();
+    };
+    const goNext = () => {
+      const nextStep = store.getNextStep;
+      store.switchStep(nextStep);
+    };
+    const goBack = () => {
+      const prevStep = store.getPreviousStep;
+      console.log(prevStep);
+      store.switchStep(prevStep);
     };
 
     return {
-      progress,
+      goBack,
+      disabled,
+      storeData,
       currentStep,
-      saveData,
+      handleSubmit,
+      dataFromCurrentForm,
     };
   },
 };
 </script>
-q
 
 <style lang="scss" scoped>
-// .form {
-//   display: flex;
-//   justify-content: center;
-// }
 .current-step {
   max-width: 600px;
 }
